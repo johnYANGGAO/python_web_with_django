@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>not favorite song in {{ album.album_title }}</title>
+</head>
+<body>
+<h2>{{ album.artist }}</h2>
+{% if error_message %}
+    <p><strong>{{ error_message }}</strong></p>
+{% endif %}
+<form action="{% url 'music:favorite' album.id %}" method="post">
+
+    {% csrf_token %}
+    {% for song in album.song_set.all %}
+        <!--只显示没有喜欢记录的歌曲-->
+        {% if not song.is_favorite %}
+            <input type="radio" id="song{{ forloop.counter }}" name="song" value="{{ song.id }}">
+            <label for="song{{ forloop.counter }}">
+                {{ song.song_title }}
+            </label><br>
+        {% endif %}
+    {% endfor %}
+    <p></p>
+    <input type="submit" value="check favorite out">
+</form>
+</body>
+</html>

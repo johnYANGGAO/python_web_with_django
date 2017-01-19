@@ -1,0 +1,138 @@
+{% extends 'music/base.html' %}
+
+{% block title %}{{ album.album_title }}{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+        <div class="row">
+            <!-- Left Album Info -->
+            <div class="col-sm-4 col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        {% if album.album_logo %}
+                            {% if album.is_local_file %}
+                                <img src="{{ album.album_logo.url }}"
+                                     width="300" height="300" class="img-responsive">
+                            {% else %}
+                                <img src="{{ album.album_logo }}"
+                                     width="300" height="300" class="img-responsive">
+                            {% endif %}
+                        {% else %}
+                            <h3>No image to display</h3>
+                        {% endif %}
+
+                        <span class="text-muted"><h3>{{ album.artist }}</h3></span>
+
+                        <h2 class="text-muted">{{ album.album_title }}</h2>
+
+                        <div id="player" style="display: none">
+                            <div>
+                                <label id="player_son_label"></label>
+                            </div>
+
+                            <audio id="audio_controller" controls="controls">
+                                <source src="">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- Right Songs Info -->
+            <div class="col-sm-8 col-md-9">
+
+                <ul class="nav nav-pills" style="margin-bottom: 10px;">
+                    <li role="presentation" class="active"><a href="#">View All</a></li>
+                    <li role="presentation"><a href="{% url 'music:create_song' album.id %}">Add New Song</a></li>
+                </ul>
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h2 class="sub-header"> all Songs in {{ album.album_title }}</h2>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>name</th>
+                                    <th>type</th>
+                                    <th>favorite</th>
+                                    <th>play/download</th>
+                                    <th>delete</th>
+                                </tr>
+                                </thead>
+                                <tbody id="play_list">
+                                {% for song in album.song_set.all %}
+                                    <tr>
+                                        <td> {{ song.song_title }}</td>
+                                        <td>{{ song.file_type }}</td>
+                                        <td>
+                                            {% if not song.is_favorite %}
+                                                <a href="{% url 'music:favorite_song' album.id  song.id %}"
+                                                   class="btn-favorite"><span
+                                                        class="glyphicon glyphicon-star "></span></a>
+                                            {% else %}
+                                                <a href="{% url 'music:cancel_favorite_song' album.id  song.id %}"
+                                                   class="btn-favorite"><span
+                                                        class="glyphicon glyphicon-star active"></span></a>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div id="play_song_button_a">
+                                                <button id="play_song_button" type="button"
+                                                        class="btn btn-success btn-xs"
+                                                        onclick="play_my_music('{{ song.audio_file.url }}','{{ song.song_title }}')">
+                                                    <span class="glyphicon glyphicon-play"></span>&nbsp; Play
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <form action="{% url 'music:delete_song' album.id song.id %}" method="post"
+                                                  style="display: inline;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="song_id" value="{{ song.id }}"/>
+                                                <button type="submit" class="btn btn-danger btn-xs">
+                                                    <span class="glyphicon glyphicon-remove"></span>&nbsp; Delete
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        function play_my_music(url, name) {
+
+            var supportsAudio = !!document.createElement('audio').canPlayType;
+
+            if (supportsAudio) {
+
+                var player = $('#audio_controller')[0];
+                var area = $('#player')[0];
+                var label = $('#player_son_label')[0];
+                player.src = url;
+                player.play();
+                area.style.display = 'block';
+                label.innerText = name;
+                player.addEventListener('ended', function () {
+
+                    area.style.display = 'none';
+                    if (player.playing) {
+                        player.stop()
+                    }
+                });
+
+            }
+        }
+
+    </script>
+
+{% endblock %}

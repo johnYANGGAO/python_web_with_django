@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>favorite song in {{ album.album_title }}</title>
+</head>
+<body>
+<h2>{{ album.artist }}</h2>
+
+{% for song in album.song_set.all %}
+    <label>
+        {% if song.is_favorite %}
+            {{ song.song_title }}
+            <img src="http://i.imgur.com/b9b13Rd.png">
+        {% endif %}
+    </label><br>
+{% endfor %}
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'music/player_file/plugin/css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'music/player_file/demo/css/demo.css' %}">
+    <script type="text/javascript" src="{% static 'music/player_file/demo/js/jquery-1.6.1.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'music/player_file/plugin/jquery-jplayer/jquery.jplayer.js' %}"></script>
+    <script type="text/javascript" src="{% static 'music/player_file/plugin/ttw-music-player-min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'music/player_file/demo/js/myplaylist.js' %}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.  ';
+
+            $('body').ttwMusicPlayer(myPlaylist, {
+                autoPlay: false,
+                description: description,
+                jPlayer: {
+                    swfPath: "{% static 'music/player_file/plugin/jquery-jplayer' %} "
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+<div id="title"><h2>SOMETHING WRONG WITH SONG'S PATH</h2></div><br/>
+<p id="download">THIS IS DEMO</p>
+
+</body>
+</html>

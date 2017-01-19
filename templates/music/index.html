@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load staticfiles %}
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.0/build/pure-min.css">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.0/build/grids-responsive-min.css">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'music/base_style.css' %}">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <title>YongGao's python website</title>
+</head>
+
+<body>
+
+<div class="sidebar pure-u-1 pure-u-md-1-4">
+    <div class="header">
+        <h2 class="brand-title">welcome my world</h2>
+        <h3 class="brand-tagline">Creating a music garden using Pure</h3>
+
+        <nav class="nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a class="pure-button" href="{% url 'music:play' %}">Test Player</a>
+                </li>
+                <li class="nav-item">
+                    <a class="pure-button" href=" {% url 'music:create_album' %}">add album</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div class="content pure-u-1 pure-u-md-3-4">
+    <div>
+        <!-- A wrapper for all the blog posts -->
+        <div class="posts">
+            <h1 class="content-subhead">keep moving enjoying our life</h1>
+
+            <!-- A single  post -->
+            <section class="post">
+                <header class="post-header">
+                    <img width="78" height="78" alt="Tilo Mitra&#x27;s avatar" class="post-avatar"
+                         src="{% static 'music/images/avatar.jpg' %}">
+
+                    <h2 class="post-title">Showing Albums</h2>
+
+                    <p class="post-meta">
+                        By <a href="#" class="post-author">YangGao</a> under <a
+                            class="post-category post-category-design" href="#">CSS</a> <a
+                            class="post-category post-category-pure" href="#">Pure</a>
+                    </p>
+                </header>
+
+                <div class="post-description">
+                    <div class="col-sm-12">
+                        <h3>{{ user.username }}'s Albums</h3>
+                    </div>
+                    {#  <!-- {% if all_albums %}  for def view's parameter-->#}
+                    {% if object_list %}
+
+                        {# <!--{% for album in all_albums %} for normal def url view-->#}
+                        {% for album in object_list %}
+                            <div class="col-sm-4 col-lg-4 ">
+                                <div class="thumbnail">
+                                    <a href="{% url 'music:all_songs' album.id %}">
+                                        {% if album.is_local_file %}
+                                            <img src="{{ album.album_logo.url }}" class="img-responsive">
+                                        {% else %}
+                                            <img src="{{ album.album_logo }}" class="img-responsive">
+                                        {% endif %}
+                                    </a>
+                                    <div class="caption">
+                                        <h2>{{ album.album_title }}</h2>
+                                        <h4>{{ album.artist }}</h4>
+                                        {# <a href="{% url 'music:display_all_in_album' album.id %}">{{ album.album_title }}</a>#}
+
+                                        <a href="{% url 'music:all_songs' album.id %}"
+                                           class="button-success pure-button">check
+                                        </a>
+                                        {# button's event needs form to active#}
+                                        <form action="{% url 'music:delete_album' album.id %}" method="post"
+                                              style="display: inline;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="album_id" value="{{ album.id }}"/>
+                                            <button type="submit" class="button-error pure-button">delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% cycle '' '' '' '' '' '<div class="clearfix visible-lg"></div>' %}
+                        {% endfor %}
+
+                    {% else %}
+                        <h3>you have nothing to show</h3>
+                        <div class="col-sm-12">
+                            <br>
+                            <a href="{% url 'music:create_album' %}">
+                                <button type="button" class="btn btn-success">
+                                    <span class="glyphicon glyphicon-plus"></span>&nbsp; Add an Album
+                                </button>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </section>
+        </div>
+    </div>
+</div>
+</body>
